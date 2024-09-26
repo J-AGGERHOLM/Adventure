@@ -17,46 +17,72 @@ public class UI {
         System.out.println("You can also: \n Look around");
 
 
-        Room currentRoom = adventure.getCurrentRoom();                              //Access the current room
+        //this controls the behaviour to move around the rooms:
+
+        Room currentRoom = adventure.getCurrentRoom();                                   //Access the current room
 
 
-        while (!userchoice.equals("exit")) {                                        //Sentinel loop for "Exit"
+        while (!userchoice.equals("exit")) {                                             //Sentinel loop for "Exit"
             userchoice = input.nextLine();
-            switch (userchoice) {                                                   //switch case that looks for strings
+            adventure.updateDescription(adventure.getCurrentRoom());
 
-                case String userchoice when userchoice.contains("north"):           // checks for string "north"
-                    if(adventure.getCurrentRoom().north != null) {                  // if north is not null, we go north.
-                        System.out.println("You enter into the northern room...");
-                        adventure.setCurrentRoom(currentRoom.north);
+            switch (userchoice) {                                                        //switch case that looks for strings
+
+                case String userchoice when userchoice.contains("north"):                // checks if room's locked attribute is true.
+                    if (adventure.getCurrentRoom().north != null) {                     // checks for string "north"
+                        if (!adventure.getCurrentRoom().north.locked) {                  // if north is not null, we go north.
+                            adventure.getCurrentRoom().leftRoom = true;                  //marks the room as a room that has already been in.
+                            System.out.println("You enter into the northern room...");
+                            adventure.setCurrentRoom(currentRoom.north);
+
+                        } else {
+                            System.out.println(adventure.getCurrentRoom().lockedMessage);          //if locked is true, then we get this message.
+                        }
                     } else {
-                        System.out.println("Only brick walls that way...");
+                        System.out.println(adventure.getCurrentRoom().roomNullMessage);          //if north is null, returns this message.
                     }
                     break;
 
                 case String userchoice when userchoice.contains("south"):
-                    if(adventure.getCurrentRoom().south != null) {
-                        System.out.println("You enter into the southern room...");
-                        adventure.setCurrentRoom(currentRoom.south);
+                    if (adventure.getCurrentRoom().south != null) {
+                        if (!adventure.getCurrentRoom().south.locked) {
+                            adventure.getCurrentRoom().leftRoom = true;
+                            System.out.println("You enter into the southern room...");
+                            adventure.setCurrentRoom(currentRoom.south);
+                        } else {
+                            System.out.println(adventure.getCurrentRoom().lockedMessage);
+                        }
                     } else {
-                        System.out.println("Only brick walls that way...");
+                        System.out.println(adventure.getCurrentRoom().roomNullMessage);
                     }
                     break;
 
                 case String userchoice when userchoice.contains("west"):
-                    if(adventure.getCurrentRoom().west != null) {
-                        System.out.println("You head west, into the next room...");
-                        adventure.setCurrentRoom(currentRoom.west);
+                    if (adventure.getCurrentRoom().west != null) {
+                        if (!adventure.getCurrentRoom().west.locked) {
+                            adventure.getCurrentRoom().leftRoom = true;
+                            System.out.println("You head west, into the next room...");
+                            adventure.setCurrentRoom(currentRoom.west);
+                        } else {
+                            System.out.println(adventure.getCurrentRoom().lockedMessage);
+                        }
                     } else {
-                        System.out.println("Only brick walls that way...");
+                        System.out.println(adventure.getCurrentRoom().roomNullMessage);
                     }
                     break;
 
                 case String userchoice when userchoice.contains("east"):
-                    if(adventure.getCurrentRoom().east != null) {
-                        System.out.println("You turn east, into the next room...");
-                        adventure.setCurrentRoom(currentRoom.east);
+                    if (adventure.getCurrentRoom().east != null) {
+                        if (!adventure.getCurrentRoom().east.locked) {
+                            adventure.getCurrentRoom().leftRoom = true;
+                            System.out.println("You turn east, into the next room...");
+                            adventure.setCurrentRoom(currentRoom.east);
+                        } else {
+                            System.out.println(adventure.getCurrentRoom().lockedMessage);
+                        }
                     } else {
-                        System.out.println("Only brick walls that way...");
+                        System.out.println(adventure.getCurrentRoom().roomNullMessage);
+
                     }
                     break;
 
@@ -69,8 +95,29 @@ public class UI {
                 case "look":                                                                      //gets the room description from the currentRoom object.
                     System.out.println(newPlayer.getName() + " is looking around...");
                     System.out.println(adventure.getCurrentRoom().getRoomDescription());
-                    break;
 
+                    String doorN = "";
+                    String doorS = "";
+                    String doorE = "";
+                    String doorW = "";
+
+                    if (adventure.getCurrentRoom().north != null) {
+                        doorN = ", north";
+                    }
+                    if (adventure.getCurrentRoom().south != null) {
+                        doorS = ", south";
+                    }
+                    if (adventure.getCurrentRoom().east != null) {
+                        doorE = ", east";
+                    }
+                    if (adventure.getCurrentRoom().west != null) {
+                        doorW = ", west";
+                }
+                    if (!currentRoom.dark) {
+                        System.out.println("You see doors leading in the directios of" + doorN + doorS + doorE + doorW + ".");
+                    }
+
+                    break;
 
 
                 case null, default:
@@ -80,7 +127,6 @@ public class UI {
         }
         return "";
     }
-
 
 
 }
