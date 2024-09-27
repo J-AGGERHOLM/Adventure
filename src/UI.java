@@ -1,132 +1,104 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class UI {
 
 
-    Scanner input = new Scanner(System.in);                                         //input created
-    String userchoice = "";                                                         //userChoice initialized
-    Adventure adventure = new Adventure();                                          //Adventure objekt initialized
-    Player newPlayer = new Player(null);                                            //player initialized
+    private Scanner input = new Scanner(System.in);           //input created
 
-    public String getDisplay() {
-//        System.out.println("please name your character:");
-//        newPlayer.setName(input.nextLine());
-
-        System.out.println(newPlayer.getName() + "what would you like to do?");             //this is UI
-        System.out.print("you can travel: \n north \n south \n east \n west \n");
-        System.out.println("You can also: \n Look around");
-
-
-        //this controls the behaviour to move around the rooms:
-
-        Room currentRoom = adventure.getCurrentRoom();                                   //Access the current room
-
-
-        while (!userchoice.equals("exit")) {                                             //Sentinel loop for "Exit"
-            userchoice = input.nextLine();
-            adventure.updateDescription(adventure.getCurrentRoom());
-
-            switch (userchoice) {                                                        //switch case that looks for strings
-
-                case String userchoice when userchoice.contains("north"):                // checks if room's locked attribute is true.
-                    if (adventure.getCurrentRoom().north != null) {                     // checks for string "north"
-                        if (!adventure.getCurrentRoom().north.locked) {                  // if north is not null, we go north.
-                            adventure.getCurrentRoom().leftRoom = true;                  //marks the room as a room that has already been in.
-                            System.out.println("You enter into the northern room...");
-                            adventure.setCurrentRoom(currentRoom.north);
-
-                        } else {
-                            System.out.println(adventure.getCurrentRoom().lockedMessage);          //if locked is true, then we get this message.
-                        }
-                    } else {
-                        System.out.println(adventure.getCurrentRoom().roomNullMessage);          //if north is null, returns this message.
-                    }
-                    break;
-
-                case String userchoice when userchoice.contains("south"):
-                    if (adventure.getCurrentRoom().south != null) {
-                        if (!adventure.getCurrentRoom().south.locked) {
-                            adventure.getCurrentRoom().leftRoom = true;
-                            System.out.println("You enter into the southern room...");
-                            adventure.setCurrentRoom(currentRoom.south);
-                        } else {
-                            System.out.println(adventure.getCurrentRoom().lockedMessage);
-                        }
-                    } else {
-                        System.out.println(adventure.getCurrentRoom().roomNullMessage);
-                    }
-                    break;
-
-                case String userchoice when userchoice.contains("west"):
-                    if (adventure.getCurrentRoom().west != null) {
-                        if (!adventure.getCurrentRoom().west.locked) {
-                            adventure.getCurrentRoom().leftRoom = true;
-                            System.out.println("You head west, into the next room...");
-                            adventure.setCurrentRoom(currentRoom.west);
-                        } else {
-                            System.out.println(adventure.getCurrentRoom().lockedMessage);
-                        }
-                    } else {
-                        System.out.println(adventure.getCurrentRoom().roomNullMessage);
-                    }
-                    break;
-
-                case String userchoice when userchoice.contains("east"):
-                    if (adventure.getCurrentRoom().east != null) {
-                        if (!adventure.getCurrentRoom().east.locked) {
-                            adventure.getCurrentRoom().leftRoom = true;
-                            System.out.println("You turn east, into the next room...");
-                            adventure.setCurrentRoom(currentRoom.east);
-                        } else {
-                            System.out.println(adventure.getCurrentRoom().lockedMessage);
-                        }
-                    } else {
-                        System.out.println(adventure.getCurrentRoom().roomNullMessage);
-
-                    }
-                    break;
-
-                case "help":                                                                      //case help prints out the input options.
-                    System.out.println("Your options are:");
-                    System.out.print("you can travel: \n north \n south \n east \n west \n");
-                    System.out.println("You can also: \n Look around");
-                    break;
-
-                case "look":                                                                      //gets the room description from the currentRoom object.
-                    System.out.println(newPlayer.getName() + " is looking around...");
-                    System.out.println(adventure.getCurrentRoom().getRoomDescription());
-
-                    String doorN = "";
-                    String doorS = "";
-                    String doorE = "";
-                    String doorW = "";
-
-                    if (adventure.getCurrentRoom().north != null) {
-                        doorN = ", north";
-                    }
-                    if (adventure.getCurrentRoom().south != null) {
-                        doorS = ", south";
-                    }
-                    if (adventure.getCurrentRoom().east != null) {
-                        doorE = ", east";
-                    }
-                    if (adventure.getCurrentRoom().west != null) {
-                        doorW = ", west";
-                }
-                    if (!currentRoom.dark) {
-                        System.out.println("You see doors leading in the directios of" + doorN + doorS + doorE + doorW + ".");
-                    }
-
-                    break;
-
-
-                case null, default:
-                    break;
-            }
-            currentRoom = adventure.getCurrentRoom();                                           //makes sure currentRoom is updated after loop.
-        }
-        return "";
+    // Gets player name
+    public String getPlayerName() {
+        System.out.println("Please enter your name:");
+        return input.nextLine();
     }
+
+    // Gets player input for the game
+    public String getPlayerInput() {
+        System.out.println("What would you like to do?");
+        return input.nextLine();
+    }
+
+    // Displays message to the player
+    public void displayMessage(String message) {
+        System.out.println(message);
+    }
+
+    // Displays help menu
+    public void displayHelp() {
+        System.out.println("You can travel in the following directions: north, south, east, west");
+        System.out.println("You can also type 'look' to look around or 'exit' to quit the game.");
+    }
+
+    public String getWelcome(){
+        return "Welcome to the dungeon, ";
+    }
+
+    public String titleScreen(){
+        System.out.println("""
+                        "
+        ╔════════════════════════════════════════════════════════════════════════════╗
+        ║                                                                            ║
+        ║                     ██████╗ ███████╗██████╗ ██████╗██╗                     ║
+        ║                     ██╔══██╗██╔════╝██╔══██╗  ██╔═╝██║                     ║
+        ║                     ██████╔╝█████╗  ██████╔╝  ██║  ██║                     ║
+        ║                     ██╔═══╝ ██╔══╝  ██╔═██║   ██║  ██║                     ║
+        ║                     ██║     ███████╗██║  ██╗██████╗███████╗                ║
+        ║                     ╚═╝     ╚══════╝╚═╝  ╚═╝╚═════╝╚══════╝                ║
+        ║                                                                            ║
+        ║                           D U N G E O N   D E L V E R                      ║
+        ╠════════════════════════════════════════════════════════════════════════════╣
+        ║                                                                            ║
+        ║                Press [ENTER] to Begin Your Descent...                      ║
+        ║                                                                            ║
+        ╚════════════════════════════════════════════════════════════════════════════╝
+        """);
+        return input.nextLine();
+
+    }
+
+    public void getDoorOptions(Room room){
+
+
+        ArrayList<String> directionList = new ArrayList<>();
+
+        if (room.north != null) {
+            directionList.add("North");
+        }
+        if (room.south != null) {
+            directionList.add("South");
+        }
+        if (room.east != null) {
+            directionList.add("East");
+        }
+        if (room.west != null) {
+            directionList.add("West");
+
+        }
+        // Only if the room is not dark
+        if (!room.dark && !directionList.isEmpty()) {
+            StringBuilder message = new StringBuilder("You see doors leading in the directions of ");
+
+            // If there's only one direction, just append it
+            if (directionList.size() == 1) {
+                message.append(directionList.get(0));
+            } else {
+                // For multiple directions, append all but the last with commas
+                for (int i = 0; i < directionList.size() - 1; i++) {
+                    message.append(directionList.get(i)).append(", ");
+                }
+                // Append the last direction with "and"
+                message.append("and ").append(directionList.get(directionList.size() - 1));
+            }
+
+            message.append(".");
+            System.out.println(message.toString()); // Return the formatted message
+        }
+
+        System.out.println(""); // Return an empty string if there are no visible doors
+    }
+
+
 
 
 }
