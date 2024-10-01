@@ -1,3 +1,4 @@
+
 public class Map
 {
 
@@ -21,6 +22,10 @@ public class Map
         //Map setting
         room1.setEast(room2);
         room1.setSouth(room4);
+        Item spoon = new Item("a rusty spoon");
+        Item candle = new Item("an unlit candle");
+        room1.addRoomItems(spoon);
+        room1.addRoomItems(candle);
 
         room2.setEast(room3);
         room2.dark = true;

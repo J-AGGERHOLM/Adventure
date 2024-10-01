@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Adventure {
 
 
@@ -10,7 +12,7 @@ public class Adventure {
     public Adventure(UI ui) {
         this.map = new Map();                      // Initialize the map
         this.currentRoom = map.getCurrentRoom();    // Get starting room
-        this.newPlayer = new Player(null, null);    // Initialize player without a name or location
+        this.newPlayer = new Player(null, null, new ArrayList<Item>());    // Initialize player without a name or location and empty inventory
         this.ui = ui;                               // Initialize UI
     }
 
@@ -28,6 +30,7 @@ public class Adventure {
         while (!userchoice.equals("exit")) {                                             //Sentinel loop for "Exit"
             userchoice = ui.getPlayerInput();
             map.updateDescription(map.getCurrentRoom());
+            String actionSubject = "";
 
 
             //checks user input for a match
@@ -43,8 +46,21 @@ public class Adventure {
             if (userchoice.contains("east")) {
                 userchoice = "east";
             }
-
-
+            if (userchoice.contains("take")) {
+                // Extracting the keyword from the user input after "take"
+                    String[] inputParts = userchoice.split(" ", 2);  // Split into "take" and item name
+                if (inputParts.length > 1) {
+                    actionSubject = inputParts[1].trim();  // Get the item keyword (e.g., "candle")
+                    userchoice = "take";  // change userchoice to "take" for switch-case
+                }
+            }
+            if (userchoice.contains("drop")) {
+                String[] inputPart = userchoice.split(" ", 2);
+                if (inputPart.length > 1) {
+                    actionSubject = inputPart[1].trim();
+                    userchoice = "drop";
+                }
+            }
 
 
             switch (userchoice) {                                                        //switch case that looks for strings
@@ -112,18 +128,59 @@ public class Adventure {
                     ui.displayHelp();
                     break;
 
-                case "look":                                                                      //gets the room description from the currentRoom object.
-                    ui.displayMessage(newPlayer.getName() + " is looking around...");
+                case "look":
+                    ui.displayMessage(newPlayer.getName() + " is looking around...");//gets the room description from the currentRoom object.
                     ui.displayMessage(map.getCurrentRoom().getRoomDescription());
-                    ui.getDoorOptions(map.getCurrentRoom());                                        //gets door options.
+                    ui.seeRoomItems(map.getCurrentRoom());
+                    ui.getDoorOptions(map.getCurrentRoom()); //gets door options.
 
                     break;
 
+                case "take":
+                    if (actionSubject.isEmpty()){
+                        ui.displayMessage("please specify which item you would like to take.");
+                    }else {
+
+                        for (Item i : map.getCurrentRoom().roomItems) {
+                            if (i.getItemName().toLowerCase().contains(actionSubject.toLowerCase())) {
+                                newPlayer.addToInventory(i);                                            // add the item to player's inventory
+                                currentRoom.takeItem(actionSubject, map.getCurrentRoom().roomItems);    // removes item from room list
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+
+                case "drop":
+                    if (!newPlayer.getInventory().isEmpty()) {
+                        if (actionSubject.isEmpty()) {
+                            ui.displayMessage("please specify which item you would like to drop.");
+                        } else {
+                            for (Item i : newPlayer.getInventory()) {
+                                if (i.getItemName().toLowerCase().contains(actionSubject.toLowerCase())) {
+                                    newPlayer.dropItem(i);
+                                    ui.displayMessage("You dropped the " + i.getItemName() + ".");
+                                    break;
+
+                                } else {
+                                    System.out.println("don't have that item");
+                                }
+                            }
+                            break;
+                        }
+                    }
+
+                case "inventory":
+                    newPlayer.seeInventory();
+                    break;
 
                 default:
                     ui.displayMessage("Invalid option. Type 'help' for commands.");
                     break;
             }
+
+
             currentRoom = map.getCurrentRoom();
             newPlayer.setLocation(map.getCurrentRoom());                                          //makes sure currentRoom is updated after loop.
         }

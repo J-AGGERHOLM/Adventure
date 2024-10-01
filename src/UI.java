@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class UI {
@@ -30,34 +29,34 @@ public class UI {
         System.out.println("You can also type 'look' to look around or 'exit' to quit the game.");
     }
 
-    public String getWelcome(){
+    public String getWelcome() {
         return "Welcome to the dungeon, ";
     }
 
-    public String titleScreen(){
+    public String titleScreen() {
         System.out.println("""
-                        "
-        ╔════════════════════════════════════════════════════════════════════════════╗
-        ║                                                                            ║
-        ║                     ██████╗ ███████╗██████╗ ██████╗██╗                     ║
-        ║                     ██╔══██╗██╔════╝██╔══██╗  ██╔═╝██║                     ║
-        ║                     ██████╔╝█████╗  ██████╔╝  ██║  ██║                     ║
-        ║                     ██╔═══╝ ██╔══╝  ██╔═██║   ██║  ██║                     ║
-        ║                     ██║     ███████╗██║  ██╗██████╗███████╗                ║
-        ║                     ╚═╝     ╚══════╝╚═╝  ╚═╝╚═════╝╚══════╝                ║
-        ║                                                                            ║
-        ║                           D U N G E O N   D E L V E R                      ║
-        ╠════════════════════════════════════════════════════════════════════════════╣
-        ║                                                                            ║
-        ║                Press [ENTER] to Begin Your Descent...                      ║
-        ║                                                                            ║
-        ╚════════════════════════════════════════════════════════════════════════════╝
-        """);
+                                "
+                ╔════════════════════════════════════════════════════════════════════════════╗
+                ║                                                            |               ║
+                ║                      ██████╗ ███████╗██████╗ ██████╗██╗   -+-          +   ║
+                ║   +     |            ██╔══██╗██╔════╝██╔══██╗  ██╔═╝██║    |               ║
+                ║        -+-           ██████╔╝█████╗  ██████╔╝  ██║  ██║                    ║
+                ║         |    +       ██╔═══╝ ██╔══╝  ██╔═██║   ██║  ██║         +          ║
+                ║    +                 ██║     ███████╗██║  ██╗██████╗███████╗       |       ║
+                ║                      ╚═╝     ╚══════╝╚═╝  ╚═╝╚═════╝╚══════╝      -+-      ║
+                ║       +               +                                            |       ║
+                ║                           D U N G E O N   D E L V E R     +                ║
+                ╠════════════════════════════════════════════════════════════════════════════╣
+                ║                                                                            ║
+                ║                     Press [ENTER] to Begin Your Descent...                 ║
+                ║                                                                            ║
+                ╚════════════════════════════════════════════════════════════════════════════╝
+                """);
         return input.nextLine();
 
     }
 
-    public void getDoorOptions(Room room){
+    public void getDoorOptions(Room room) {
 
 
         ArrayList<String> directionList = new ArrayList<>();
@@ -99,6 +98,29 @@ public class UI {
     }
 
 
+    public void seeRoomItems(Room room) {
+        if (!(room.roomItems.isEmpty()) && !room.dark) {
+            StringBuilder message = new StringBuilder("In this room, you notice ");
 
+            if (room.roomItems.size() == 1) {
+                message.append(room.roomItems.get(0));
+            }
+            if (room.roomItems.size() > 1) {
+                // For items, append all but the last with commas
+                for (int i = 0; i < room.roomItems.size() - 1; i++) {
+                    message.append(room.roomItems.get(i)).append(", ");
+                }
+                // Append the last item with "and "
+                message.append("and ").append(room.roomItems.get(room.roomItems.size() - 1));
+            }
+
+            message.append(".");
+            System.out.println(message.toString()); // Return the formatted message
+        } else {
+
+            System.out.println("");
+
+        }
+    }
 
 }
