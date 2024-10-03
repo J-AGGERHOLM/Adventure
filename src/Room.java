@@ -1,20 +1,20 @@
+
 import java.util.ArrayList;
 
 public class Room {
-    String roomDescription;
-    boolean gotDescription = false;
-    boolean leftRoom = false;
-    Room north;
-    Room south;
-    Room west;
-    Room east;
-    Room currentRoom;
-    boolean locked = false;
-    String lockedMessage = "This door is locked!";
-    boolean dark = false;
-    String roomNullMessage = "Only brick walls this way...";
-    ArrayList<Item> roomItems = new ArrayList<Item>();
-
+    private String roomDescription;
+    private boolean gotDescription = false;
+    private boolean leftRoom = false;
+    private Room north;
+    private Room south;
+    private Room west;
+    private Room east;
+    private Room currentRoom;
+    private boolean locked = false;
+    private String lockedMessage = "This door is locked!";
+    private boolean dark = false;
+    private String roomNullMessage = "Only brick walls this way...";
+     ArrayList<Item> roomItems = new ArrayList<Item>();
 
     public Room(String roomDescription) {
         this.roomDescription = roomDescription;
@@ -68,10 +68,48 @@ public class Room {
         }
     }
 
+    public boolean playerGotDescription(){
+        return this.gotDescription;
+    }
+
     public void setNorth(Room north) {
         this.north = north;
         north.south = this;
 
+    }
+
+    public boolean playerLeftRoom() {
+        return leftRoom;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    public boolean isDark() {
+        return dark;
+    }
+
+    public void setDark(boolean dark) {
+        this.dark = dark;
+    }
+
+    public String getLockedMessage() {
+        return lockedMessage;
+    }
+
+    public String getRoomNullMessage() {
+        return roomNullMessage;
+    }
+
+    ///direction setters
+
+    public void setLeftRoom(boolean leftRoom) {
+        this.leftRoom = leftRoom;
     }
 
     public void setEast(Room east) {
@@ -89,18 +127,38 @@ public class Room {
         south.north = this;
     }
 
-    public void setLocked(Room room) {
-        this.locked = true;
+
+    ////direction getters
+
+
+    public Room getNorth() {
+        return north;
     }
 
+    public Room getSouth() {
+        return south;
+    }
 
-    public String getRoomItems() {
+    public Room getWest() {
+        return west;
+    }
+
+    public Room getEast() {
+        return east;
+    }
+
+    public String writeRoomItems() {
 
         for (Item i : roomItems) {
             return i.toString();
         }
         return "";
     }
+
+    public ArrayList<Item> getRoomItems(){
+        return roomItems;
+    }
+
 
     public void addRoomItems(Item item) {
         roomItems.add(item);

@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -61,21 +62,21 @@ public class UI {
 
         ArrayList<String> directionList = new ArrayList<>();
 
-        if (room.north != null) {
+        if (room.getNorth() != null) {
             directionList.add("North");
         }
-        if (room.south != null) {
+        if (room.getSouth() != null) {
             directionList.add("South");
         }
-        if (room.east != null) {
+        if (room.getEast() != null) {
             directionList.add("East");
         }
-        if (room.west != null) {
+        if (room.getWest() != null) {
             directionList.add("West");
 
         }
         // Only if the room is not dark
-        if (!room.dark && !directionList.isEmpty()) {
+        if (!room.isDark() && !directionList.isEmpty()) {
             StringBuilder message = new StringBuilder("You see doors leading in the directions of ");
 
             // If there's only one direction, just append it
@@ -99,19 +100,19 @@ public class UI {
 
 
     public void seeRoomItems(Room room) {
-        if (!(room.roomItems.isEmpty()) && !room.dark) {
+        if (!(room.getRoomItems().isEmpty()) && !room.isDark()) {
             StringBuilder message = new StringBuilder("In this room, you notice ");
 
-            if (room.roomItems.size() == 1) {
-                message.append(room.roomItems.get(0));
+            if (room.getRoomItems().size() == 1) {
+                message.append(room.getRoomItems().get(0));
             }
-            if (room.roomItems.size() > 1) {
+            if (room.getRoomItems().size() > 1) {
                 // For items, append all but the last with commas
-                for (int i = 0; i < room.roomItems.size() - 1; i++) {
-                    message.append(room.roomItems.get(i)).append(", ");
+                for (int i = 0; i < room.getRoomItems().size() - 1; i++) {
+                    message.append(room.getRoomItems().get(i)).append(", ");
                 }
                 // Append the last item with "and "
-                message.append("and ").append(room.roomItems.get(room.roomItems.size() - 1));
+                message.append("and ").append(room.getRoomItems().get(room.getRoomItems().size() - 1));
             }
 
             message.append(".");
@@ -123,4 +124,25 @@ public class UI {
         }
     }
 
+    public void seeHealth(Player player) {
+        int healthPoints = player.getHealth();
+
+        if (healthPoints >= 100) {
+            System.out.println("Not a scratch!");
+        } else if (healthPoints >= 75) {
+            System.out.println("You're weary from the day's adventure... maybe a snack would be nice.");
+        } else if (healthPoints > 50) {
+            System.out.println("You've sustained minor injuries, you need to rest soon.");
+        } else if (healthPoints > 25) {
+            System.out.println("Your breath is ragged and you're covered in cuts and bruises.\n" +
+                    "It's becoming hard to move... you need to tend to your injuries as soon as possible.");
+        } else {
+            System.out.println("You're on the brink of collapse! Immediate care is necessary.");
+        }
+    }
+
 }
+
+
+
+

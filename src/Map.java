@@ -1,4 +1,5 @@
 
+
 public class Map
 {
 
@@ -12,6 +13,7 @@ public class Map
     Room room7 = new Room(null);
     Room room8 = new Room(null);
     Room room9 = new Room(null);
+    Room room10 = new Room(null);
 
 
     //setting descriptions:
@@ -22,18 +24,21 @@ public class Map
         //Map setting
         room1.setEast(room2);
         room1.setSouth(room4);
+        room1.setNorth(room10);
         Item spoon = new Item("a rusty spoon");
         Item candle = new Item("an unlit candle");
+        Food apple = new Food("a shiny apple", 5, false);
         room1.addRoomItems(spoon);
         room1.addRoomItems(candle);
+        room1.addRoomItems(apple);
 
         room2.setEast(room3);
-        room2.dark = true;
+        room2.setDark(true);
 
         room3.setSouth(room6);
 
         room4.setSouth(room7);
-        room4.locked=true;
+        room4.setLocked(true);
 
         room5.setSouth(room8);
 
@@ -88,6 +93,8 @@ public class Map
                 "The faint scent of herbs and earth fills the air, and tiny flowers grow in the cracks between the stones. \n" +
                 "A quiet hum seems to vibrate through the ground beneath you. \n");
 
+        room10.setRoomDescription("the programmer hasn't set up this room, come back later!");
+
 
 
     }
@@ -107,7 +114,7 @@ public class Map
     String beenThereDescription = "this room seems familiar, you've been here before.";
 
     public void updateDescription(Room room){
-        if (this.currentRoom.gotDescription == true && this.currentRoom.leftRoom == true) {
+        if (this.currentRoom.playerGotDescription() && this.currentRoom.playerLeftRoom()) {
             this.currentRoom.setRoomDescription(beenThereDescription);
         }
     }
