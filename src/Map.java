@@ -1,7 +1,6 @@
 
 
-public class Map
-{
+public class Map {
 
     private Room currentRoom;
     Room room1 = new Room(null);
@@ -14,6 +13,14 @@ public class Map
     Room room8 = new Room(null);
     Room room9 = new Room(null);
     Room room10 = new Room(null);
+    Room room11 = new Room(null);
+    Room room12 = new Room(null);
+    Room room13 = new Room(null);
+    Room room14 = new Room(null);
+    Room room15 = new Room(null);
+    Room room16 = new Room(null);
+    Room room17 = new Room(null);
+    Room room18 = new Room(null);
 
 
     //setting descriptions:
@@ -38,6 +45,7 @@ public class Map
         room3.setSouth(room6);
 
         room4.setSouth(room7);
+        room4.setWest(room11);
         room4.setLocked(true);
 
         room5.setSouth(room8);
@@ -48,9 +56,23 @@ public class Map
 
         room8.setEast(room9);
         room8.setNorth(room5);
+        room8.setDark(true);
+
+        room11.setSouth(room12);
+        room11.setWest(room13);
+
+        room12.setSouth(room14);
+
+        room14.setSouth(room15);
+
+        room15.setEast(room16);
+        room14.setLocked(true);
+
+        room16.setEast(room17);
+
+        room17.setNorth(room9);
 
         currentRoom = room1;
-
 
 
         room1.setRoomDescription("The air is thick with the scent of damp earth. \n" +
@@ -93,12 +115,39 @@ public class Map
                 "The faint scent of herbs and earth fills the air, and tiny flowers grow in the cracks between the stones. \n" +
                 "A quiet hum seems to vibrate through the ground beneath you. \n");
 
-        room10.setRoomDescription("the programmer hasn't set up this room, come back later!");
+        room10.setRoomDescription("The room smells faintly of wood and sawdust, and rows of shelves line the walls, filled with mundane supplies—baskets, ropes, tools, and a few dusty bottles. \n " +
+                "The floorboards creak underfoot, and a single window near the ceiling lets in a narrow beam of light, illuminating motes of dust as they lazily float through the air.");
 
+        room11.setRoomDescription("You see an unusually tall hat stand in the corner, covered in an eclectic assortment of hats. \n" +
+                "There’s a top hat, a pirate’s tricorn, and even a helmet made of cheese. \n" +
+                "When you glance away for a second and look back, there’s another new hat—this time, a ridiculous jester’s cap. \n" +
+                "The stand sways slightly, as if it’s alive, quietly accumulating hats for reasons only it knows.\n");
 
+        room12.setRoomDescription("At first glance, this room is unremarkable, but your eyes are drawn to an impossibly small door set into the far wall. \n " +
+                "It’s no more than a foot high and ornately carved. \n " +
+                "You get the sense that opening it might lead to somewhere entirely unexpected—or to nowhere at all. \n " +
+                "It’s as if the door is waiting for someone much smaller, or perhaps for you to find a way to shrink.");
+
+        room14.setRoomDescription("The floor is covered in square tiles, each with a different symbol—a sun, a tree, a moon, and more. \n " +
+                "As you step on one, the tiles around it shift and change color, like some forgotten game waiting to be played. \n " +
+                "Nothing else seems out of place, though you can’t shake the feeling that something will happen if you solve the pattern… whatever it may be.");
+
+        room15.setRoomDescription("You find yourself in a large, cavern-like room, the ceiling arching high above. \n " +
+                "The stone walls are rough and damp, and the distant sound of dripping water echoes softly. Stalactites hang from the ceiling, glistening in the faint light. \n " +
+                "The floor is uneven, with patches of slick moss that make each step cautious and deliberate.");
+
+        room16.setRoomDescription("The corridor is narrow and dimly lit, the walls rough and uneven. \n " +
+                "A few unlit sconces are set into the stone, though they offer little warmth or light. \n " +
+                "The floor is damp, and the smell of mildew fills the air. \n " +
+                "A few stray cobwebs hang from the corners, swaying slightly in a draft that you can’t quite place.");
+
+        room17.setRoomDescription("You step into what looks like an old kitchen, though everything seems long unused. \n " +
+                "Pots and pans hang from the ceiling, covered in a fine layer of dust. \n " +
+                "The hearth is cold, with ash scattered across the floor. \n " +
+                "A wooden table stands in the center, and on it sits a bowl of dried herbs, long since forgotten. \n " +
+                "The air smells faintly of stale bread and wood smoke.");
 
     }
-
 
 
     // getter and setter for currentroom
@@ -113,7 +162,7 @@ public class Map
 
     String beenThereDescription = "this room seems familiar, you've been here before.";
 
-    public void updateDescription(Room room){
+    public void updateDescription(Room room) {
         if (this.currentRoom.playerGotDescription() && this.currentRoom.playerLeftRoom()) {
             this.currentRoom.setRoomDescription(beenThereDescription);
         }

@@ -1,13 +1,13 @@
 public class Food extends Item {
 
     private int tastiness;
-    private boolean goneBad;
+    private boolean poisoned;
 
 
-    public Food(String itemName, int tastiness, boolean goneBad) {
+    public Food(String itemName, int tastiness, boolean poisoned) {
         super(itemName);
         this.tastiness=tastiness;
-        this.goneBad = goneBad;
+        this.poisoned = poisoned;
 
     }
 
@@ -23,11 +23,11 @@ public class Food extends Item {
         return tastiness;
     }
 
-    public boolean isGoneBad() {
-        return goneBad;
+    public boolean isPoisoned() {
+        return poisoned;
     }
 
-    public void setGoneBad(boolean goneBad) {
-        this.goneBad = goneBad;
+    public void setPoisoned(boolean poisoned) {
+        this.poisoned = poisoned;
     }
 }

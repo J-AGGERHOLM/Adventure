@@ -14,7 +14,7 @@ public class Room {
     private String lockedMessage = "This door is locked!";
     private boolean dark = false;
     private String roomNullMessage = "Only brick walls this way...";
-     ArrayList<Item> roomItems = new ArrayList<Item>();
+    ArrayList<Item> roomItems = new ArrayList<Item>();
 
     public Room(String roomDescription) {
         this.roomDescription = roomDescription;
@@ -68,7 +68,7 @@ public class Room {
         }
     }
 
-    public boolean playerGotDescription(){
+    public boolean playerGotDescription() {
         return this.gotDescription;
     }
 
@@ -155,7 +155,7 @@ public class Room {
         return "";
     }
 
-    public ArrayList<Item> getRoomItems(){
+    public ArrayList<Item> getRoomItems() {
         return roomItems;
     }
 
@@ -165,22 +165,5 @@ public class Room {
     }
 
 
-    public void takeItem(String input, ArrayList<Item> roomItems) {
-        boolean itemFound = false;
 
-        for (int i = 0; i < roomItems.size(); i++) {
-            Item item = roomItems.get(i);
-
-            // Check if the item name contains the input (case-insensitive match)
-            if (item.getItemName().toLowerCase().contains(input.toLowerCase())) {
-                roomItems.remove(i);  // remove the item from the room
-                itemFound = true;
-                break;  // Exit the loop after removing the item
-            }
-        }
-
-        if (!itemFound) {
-            System.out.println("Can't find that item!");
-        }
-    }
 }
