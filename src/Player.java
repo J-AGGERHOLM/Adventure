@@ -1,17 +1,20 @@
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Player {
     private String name;
     private Room location;
     private ArrayList<Item> inventory;
     private int health;
+    private ArrayList<Weapon> equipment;
 
 
     public Player(Room location) {
         this.location = location;
         this.inventory = new ArrayList<Item>();
         this.health = 100;
+        this.equipment = new ArrayList<Weapon>();
     }
 
     public String getName() {
@@ -34,6 +37,10 @@ public class Player {
     public void seeInventory() {
         System.out.println("------INVENTORY-----");
         for (Item i : inventory) {
+            System.out.println("|   " + i.getItemName() + "  |");
+        }
+        System.out.println("------EQUIPMENT-----");
+        for (Item i : equipment) {
             System.out.println("|   " + i.getItemName() + "  |");
         }
         System.out.println("--------------------");
@@ -69,6 +76,34 @@ public class Player {
 
     public int getHealth() {
         return health;
+    }
+
+
+    public EquipResults equipWeapon(String actionSubject) {
+        boolean itemFound = false;
+        Iterator<Item> inventoryIterator = inventory.iterator();  ///creating an iterator to avoid concurrent modification error
+
+        while (inventoryIterator.hasNext()) {
+            Item i = inventoryIterator.next();
+
+            if (i.getItemName().toLowerCase().contains(actionSubject.toLowerCase())) {
+                itemFound = true;
+                if (i instanceof Weapon) {
+                    ((Weapon) i).setEquipped(true);
+                    inventoryIterator.remove(); // Safely remove the item during iteration
+                    equipment.add((Weapon) i);
+
+                } else {
+                    return EquipResults.NOT_WEAPON;
+                }
+            }
+
+        }
+        if (itemFound) {
+            return EquipResults.FOUND;
+        } else {
+            return EquipResults.NOT_FOUND;
+        }
     }
 
 
@@ -151,12 +186,42 @@ public class Player {
     }
 
 
-
-
-
     public Room getLocation() {
         return location;
     }
+
+
+    public AttackResults attack() {
+        boolean hasMeleeWeapon = false;
+        boolean hasRangedWeapon = false;
+        boolean hasAmmo = false;
+
+        for (Weapon weapon : equipment) {
+            if (weapon instanceof MeleeWeapon) {
+                hasMeleeWeapon = true;
+            }
+            if (weapon instanceof RangedWeapons) {
+                hasRangedWeapon = true;
+                if (weapon.remainingUses() > 0) {
+                    hasAmmo = true;
+                }
+
+            }
+        }
+
+        if (hasMeleeWeapon) {
+            return AttackResults.MELEE;
+        } else if (hasRangedWeapon && hasAmmo) {
+            return AttackResults.RANGED;
+        } else if (hasRangedWeapon && !hasAmmo) {
+            return AttackResults.NO_AMMO;
+        } else {
+            return AttackResults.UNARMED;
+        }
+    }
+
+
+///Move Logic
 
     public MoveResults movePlayerNorth() {
         if (location.getNorth() != null) {                           // if north is not null, we go north.

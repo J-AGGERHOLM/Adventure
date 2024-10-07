@@ -63,5 +63,12 @@ public class Adventure {
         return player.eatFood(actionSubject);
     }
 
+    public EquipResults getEquipResults(String actionSubject){
+        return player.equipWeapon(actionSubject);
+    }
+    public AttackResults getAttack(){
+        return player.attack();
+    }
+
 }
 

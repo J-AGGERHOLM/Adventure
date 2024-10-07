@@ -35,9 +35,11 @@ public class Map {
         Item spoon = new Item("a rusty spoon");
         Item candle = new Item("an unlit candle");
         Food apple = new Food("a shiny apple", 5, false);
+        MeleeWeapon sword = new MeleeWeapon("an old, chipped sword", false);
         room1.addRoomItems(spoon);
         room1.addRoomItems(candle);
         room1.addRoomItems(apple);
+        room1.addRoomItems(sword);
 
         room2.setEast(room3);
         room2.setDark(true);

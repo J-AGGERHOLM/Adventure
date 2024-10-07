@@ -201,6 +201,13 @@ public class UI {
                     userInput = "eat";
                 }
             }
+            if (userInput.contains("equip")){
+                String[] inputPart = userInput.split(" ", 2);
+                if (inputPart.length > 1){
+                    actionSubject = inputPart[1].trim();
+                    userInput = "equip";
+                }
+            }
 
             MoveResults moveResults = null;
             switch (userInput) {                                                        //switch case that looks for strings
@@ -304,21 +311,44 @@ public class UI {
                     seeHealth(adventure.getPlayer());
                     break;
 
-                    case "eat":
-                        if (actionSubject.isEmpty()) {
-                            displayMessage("Please specify which item you would like to eat.");
-                        } else {
-                            FoodResults foodResults = adventure.getEatFood(actionSubject);
-                            switch (foodResults) {
-                                case EDIBLE -> displayMessage("You ate the " + actionSubject + ".");
-                                case INEDIBLE -> displayMessage("That's not food, you can't eat that.");
-                                case POISONED -> displayMessage("The " + actionSubject + " was poisoned! \n" +
-                                        "Your stomach turns and empties itself on the floor. You feel sick.");
-                                case NULL -> displayMessage("There's nothing to eat...");
-                            }
+                case "eat":
+                    if (actionSubject.isEmpty()) {
+                        displayMessage("Please specify which item you would like to eat.");
+                    } else {
+                        FoodResults foodResults = adventure.getEatFood(actionSubject);
+                        switch (foodResults) {
+                            case EDIBLE -> displayMessage("You ate the " + actionSubject + ".");
+                            case INEDIBLE -> displayMessage("That's not food, you can't eat that.");
+                            case POISONED -> displayMessage("The " + actionSubject + " was poisoned! \n" +
+                                    "Your stomach turns and empties itself on the floor. You feel sick.");
+                            case NULL -> displayMessage("There's nothing to eat...");
                         }
-                        break;
+                    }
+                    break;
 
+                case "equip":
+                    if (actionSubject.isEmpty()) {
+                        displayMessage("Please specify which item you would like to equip.");
+                    } else {
+                        EquipResults equipResults = adventure.getEquipResults(actionSubject);
+                        switch (equipResults){
+                            case FOUND -> displayMessage("You've equipped the " + actionSubject + ".");
+
+                            case NOT_FOUND -> displayMessage("You rummage through your inventory, but find no weapon like that.");
+                            case NOT_WEAPON ->displayMessage("You hold up" + actionSubject + ". \n While trying to discern it's deadliness, you realize that this won't help you at all. you put it back in your knapsack.");
+                        }
+
+                    }
+                    break;
+                case "attack":
+                    AttackResults attackResults = adventure.getAttack();
+                    switch (attackResults){
+                        case MELEE -> displayMessage("You move in to attack with your weapon!");
+                        case RANGED -> displayMessage("You fire off a shot with your weapon!");
+                        case NO_AMMO -> displayMessage("You get ready to fire off your weapon, but realize you're out of ammo!");
+                        case UNARMED -> displayMessage("You throw a weak punch!");
+                    }
+                    break;
 
 
                 default:
