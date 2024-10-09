@@ -1,6 +1,3 @@
-
-import java.util.ArrayList;
-
 public class Adventure {
 
 
@@ -68,6 +65,30 @@ public class Adventure {
     }
     public AttackResults getAttack(){
         return player.attack();
+    }
+
+
+
+    ///combat caller methods
+
+    public int getEnemyAttackValue(Enemy enemy){
+        return enemy.enemyAttack(enemy.getAttackMin(),enemy.getAttackMax());
+    }
+
+    public void updatePlayerHealth(int damage){
+        player.setHealth(player.getHealth()-damage);
+    }
+
+    public void updateEnemyHealth(Enemy enemy, int damage){
+        enemy.setHealth(enemy.getHealth()-damage);
+    }
+
+    public EnemyHealthLevel checkEnemyAlive(Enemy enemy){
+        return enemy.enemyAlive(enemy);
+    }
+
+    public int getPlayerAttackValue(){
+        return player.damageDealt();
     }
 
 }

@@ -1,6 +1,8 @@
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 public class Player {
     private String name;
@@ -34,19 +36,67 @@ public class Player {
         System.out.println("You added " + item.getItemName() + " to your inventory.");
     }
 
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    ///inventory
+
     public void seeInventory() {
-        System.out.println("------INVENTORY-----");
+        // Finds  the longest item name in both inventory and equipment
+        int maxLength = 0;
         for (Item i : inventory) {
-            System.out.println("|   " + i.getItemName() + "  |");
+            if (i.getItemName().length() > maxLength) {
+                maxLength = i.getItemName().length();
+            }
         }
-        System.out.println("------EQUIPMENT-----");
         for (Item i : equipment) {
-            System.out.println("|   " + i.getItemName() + "  |");
+            if (i.getItemName().length() > maxLength) {
+                maxLength = i.getItemName().length();
+            }
         }
-        System.out.println("--------------------");
+
+///add space for padding
+        int paddingSize = 3;
+        int totalLength = maxLength + (paddingSize * 2); // Total length for each line
+        String horizontalLine = "═".repeat(totalLength + 6); // number accounts for the side ║ and padding
+
+        // inventory header with aligned top ╔═...═╗
+        System.out.println("╔" + horizontalLine + "╗");
+        String paddedInventoryTitle = padItemName("---INVENTORY---", totalLength);
+        System.out.println("║   " + paddedInventoryTitle + "   ║");
+
+        // Prints each item in the inventory with padded item names
+        for (Item i : inventory) {
+            String paddedItemName = padItemName(i.getItemName(), totalLength);
+            System.out.println("║   " + paddedItemName + "   ║");
+        }
+
+        // Print the equipment header with aligned middle ╠═...═╣
+        System.out.println("╠" + horizontalLine + "╣");
+        String paddedEquipmentTitle = padItemName("---EQUIPMENT---", totalLength);
+        System.out.println("║   " + paddedEquipmentTitle + "   ║");
+
+        // Print each item in the equipment with padded item names
+        for (Item i : equipment) {
+            String paddedItemName = padItemName(i.getItemName(), totalLength);
+            System.out.println("║   " + paddedItemName + "   ║");
+        }
+
+        // Print the aligned bottom ╚═...═╝
+        System.out.println("╚" + horizontalLine + "╝");
+    }
+
+    // Helper method to pad item names with spaces
+    private String padItemName(String itemName, int totalLength) {
+        int paddingSize = (totalLength - itemName.length()) / 2;
+        String paddedItemName = " ".repeat(paddingSize) + itemName + " ".repeat(totalLength - itemName.length() - paddingSize);
+        return paddedItemName;
     }
 
 
+
+    ///metjos to add and remove from ItemList
     public void dropItem(Item item) {
         if (!this.inventory.isEmpty()) {
             this.inventory.remove(item);
@@ -81,29 +131,40 @@ public class Player {
 
     public EquipResults equipWeapon(String actionSubject) {
         boolean itemFound = false;
-        Iterator<Item> inventoryIterator = inventory.iterator();  ///creating an iterator to avoid concurrent modification error
+        Weapon newWeapon = null;
+        boolean alreadyEquipped = false;
 
-        while (inventoryIterator.hasNext()) {
-            Item i = inventoryIterator.next();
 
+        for (Item i : new ArrayList<>(inventory)) {
             if (i.getItemName().toLowerCase().contains(actionSubject.toLowerCase())) {
                 itemFound = true;
-                if (i instanceof Weapon) {
-                    ((Weapon) i).setEquipped(true);
-                    inventoryIterator.remove(); // Safely remove the item during iteration
-                    equipment.add((Weapon) i);
 
+
+                if (i instanceof Weapon) {
+                    newWeapon = (Weapon) i;
+
+
+                    if (!equipment.isEmpty()) {// checks for equipped weapon, move it to the inventory
+                        alreadyEquipped = true;
+                        // Move the currently equipped weapon back to inventory
+                        Weapon currentlyEquipped = equipment.get(0);
+                        currentlyEquipped.setEquipped(false); // Un-equips the currently equipped weapon
+                        inventory.add(currentlyEquipped); // Add it back to the inventory
+                        equipment.remove(0); // Remove it from the equipped list
+                    }
+
+                    // Equipping new weapon
+                    newWeapon.setEquipped(true);
+                    inventory.remove(i); // Remove the item from inventory directly
+                    equipment.add(newWeapon); // Add the new weapon to the equipment list
+                    return alreadyEquipped ? EquipResults.ALREADY_EQUIPPED : EquipResults.FOUND;
                 } else {
-                    return EquipResults.NOT_WEAPON;
+                    return EquipResults.NOT_WEAPON; // if item is not a weapon
                 }
             }
+        }
 
-        }
-        if (itemFound) {
-            return EquipResults.FOUND;
-        } else {
-            return EquipResults.NOT_FOUND;
-        }
+        return itemFound ? EquipResults.FOUND : EquipResults.NOT_FOUND;
     }
 
 
@@ -118,7 +179,8 @@ public class Player {
                 if (i instanceof Food) {
                     Food foodItem = (Food) i;
 
-                    // Handle tastiness and health adjustment
+
+                    //check how tasty an item is, and restores HP depending on it.
                     int howTasty = foodItem.getTastiness();
                     if (howTasty >= 10) {
                         this.health += 50;
@@ -190,23 +252,28 @@ public class Player {
         return location;
     }
 
+    Weapon currentWeapon;
 
     public AttackResults attack() {
         boolean hasMeleeWeapon = false;
         boolean hasRangedWeapon = false;
         boolean hasAmmo = false;
 
+
         for (Weapon weapon : equipment) {
             if (weapon instanceof MeleeWeapon) {
                 hasMeleeWeapon = true;
+                currentWeapon = weapon;
+
             }
             if (weapon instanceof RangedWeapons) {
                 hasRangedWeapon = true;
                 if (weapon.remainingUses() > 0) {
                     hasAmmo = true;
+                    currentWeapon = weapon;
                 }
-
             }
+
         }
 
         if (hasMeleeWeapon) {
@@ -217,6 +284,26 @@ public class Player {
             return AttackResults.NO_AMMO;
         } else {
             return AttackResults.UNARMED;
+        }
+
+    }
+
+    public int damageDealt() {
+        Random attack = new Random();
+        int weaponModifier = 0;
+        if (!equipment.isEmpty()) {
+            weaponModifier = currentWeapon.getAttackModifier();
+        }
+
+        if (currentWeapon instanceof RangedWeapons) {
+            // Generate random damage between 1 and 6 for ranged weapons
+            return attack.nextInt(6) + 1 + weaponModifier;
+        } else if (currentWeapon instanceof MeleeWeapon) {
+            // Generate random damage between 1 and 8 for melee weapons
+            return attack.nextInt(8) + 1 + weaponModifier;
+        } else {
+            // if no weapon we only get this value:
+            return 1;
         }
     }
 
@@ -272,7 +359,7 @@ public class Player {
     }
 
     public MoveResults movePlayerWest() {
-        if (location.getWest() != null) {                           // if north is not null, we go north.
+        if (location.getWest() != null) {
             if (!location.getWest().isLocked()) {
                 location.setLeftRoom(true);
                 setLocation(location.getWest());

@@ -15,9 +15,11 @@ public class Room {
     private boolean dark = false;
     private String roomNullMessage = "Only brick walls this way...";
     ArrayList<Item> roomItems = new ArrayList<Item>();
+    ArrayList<Enemy> roomEnemies = new ArrayList<Enemy>();
 
     public Room(String roomDescription) {
         this.roomDescription = roomDescription;
+
 
     }
 
@@ -25,6 +27,7 @@ public class Room {
         this.roomDescription = roomDescription;
         this.gotDescription = gotDescription;
         this.leftRoom = leftRoom;
+
 
     }
 
@@ -35,6 +38,7 @@ public class Room {
         this.leftRoom = leftRoom;
         this.locked = locked;
 
+
     }
 
     public Room(String roomDescription, boolean gotDescription, boolean leftRoom, boolean locked, boolean dark) {
@@ -43,14 +47,16 @@ public class Room {
         this.leftRoom = leftRoom;
         this.locked = locked;
 
+
     }
 
-    public Room(String roomDescription, boolean gotDescription, boolean leftRoom, boolean locked, boolean dark, ArrayList<Item> roomItems) {
+    public Room(String roomDescription, boolean gotDescription, boolean leftRoom, boolean locked, boolean dark, ArrayList<Item> roomItems, ArrayList<Enemy> roomEnemies) {
         this.roomDescription = roomDescription;
         this.gotDescription = gotDescription;
         this.leftRoom = leftRoom;
         this.locked = locked;
         this.roomItems = roomItems;
+        this.roomEnemies = roomEnemies;
 
     }
 
@@ -147,6 +153,9 @@ public class Room {
         return east;
     }
 
+
+    //methods concerning roomItems
+
     public String writeRoomItems() {
 
         for (Item i : roomItems) {
@@ -164,6 +173,24 @@ public class Room {
         roomItems.add(item);
     }
 
+
+    ///add and get enemies
+
+    public void addRoomEnemies(Enemy enemy) {
+        roomEnemies.add(enemy);
+    }
+
+    public ArrayList<Enemy> getEnemyList(){
+        return roomEnemies;
+    }
+
+    public Enemy getRoomEnemies() {
+        Enemy currentEnemy = null;
+        for (Enemy enemy : roomEnemies) {
+            currentEnemy = enemy;
+        }
+        return currentEnemy;
+    }
 
 
 }

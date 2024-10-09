@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -26,8 +25,24 @@ public class UI {
 
     // Displays help menu
     public void displayHelp() {
-        System.out.println("You can travel in the following directions: north, south, east, west");
-        System.out.println("You can also type 'look' to look around or 'exit' to quit the game.");
+        displayMessage("Here are the commands available to you::");
+        displayMessage("You can 'go' or 'travel' in the directions, 'north', 'south' 'east' and 'west'");
+        displayMessage("further commands include: " +
+                "\n 'look' to look around. " +
+                "\n 'take' no take an item. " +
+                "\n 'drop' to drop an item." +
+                "\n 'eat' to eat food. " +
+                "\n 'equip' to equip a weapon. " +
+                "\n 'see health', or 'health' to see your health. " +
+                "\n 'see inventory', or 'inventory' to view your inventory or equipment." +
+                "\n 'attack' to attack" +
+                "\n 'exit' to exit the game.");
+
+
+    }
+
+    public void displayExit() {
+        displayMessage("Thank you for playing Peril!");
     }
 
     public String getWelcome() {
@@ -79,11 +94,11 @@ public class UI {
         if (!room.isDark() && !directionList.isEmpty()) {
             StringBuilder message = new StringBuilder("You see doors leading in the directions of ");
 
-            // If there's only one direction, just append it
+            // If there's only one direction, we append it
             if (directionList.size() == 1) {
                 message.append(directionList.get(0));
             } else {
-                // For multiple directions, append all but the last with commas
+                // For multiple directions, append all but the last on e with commas
                 for (int i = 0; i < directionList.size() - 1; i++) {
                     message.append(directionList.get(i)).append(", ");
                 }
@@ -92,10 +107,10 @@ public class UI {
             }
 
             message.append(".");
-            System.out.println(message.toString()); // Return the formatted message
+            System.out.println(message.toString());
         }
 
-        System.out.println(""); // Return an empty string if there are no visible doors
+        System.out.println("");
     }
 
 
@@ -116,11 +131,34 @@ public class UI {
             }
 
             message.append(".");
-            System.out.println(message.toString()); // Return the formatted message
+            System.out.println(message.toString()); // Returns new message
+
         } else {
 
             System.out.println("");
 
+        }
+    }
+
+    public void seeRoomEnemies(Room room) {
+        if (!room.roomEnemies.isEmpty() && !room.isDark()) {
+            StringBuilder message = new StringBuilder("You see a figure in the room! it's a  ");
+            if (room.getEnemyList().size() == 1) {
+                message.append(room.getEnemyList().get(0));
+            }
+            if (room.getEnemyList().size() > 1) {
+                for (int i = 0; i < room.getEnemyList().size() - 1; i++) {
+                    message.append(room.getEnemyList().get(i)).append(", ");
+                }
+                message.append("and ").append(room.getEnemyList().get(room.getEnemyList().size() - 1));
+
+            }
+            message.append(".");
+            System.out.println(message.toString());
+            System.out.println(room.getRoomEnemies().getDescription());
+        } else {
+
+            System.out.println("");
         }
     }
 
@@ -134,8 +172,7 @@ public class UI {
         } else if (healthPoints > 50) {
             System.out.println("You've sustained minor injuries, you need to rest soon.");
         } else if (healthPoints > 25) {
-            System.out.println("Your breath is ragged and you're covered in cuts and bruises.\n" +
-                    "It's becoming hard to move... you need to tend to your injuries as soon as possible.");
+            System.out.println("Your breath is ragged and you're covered in cuts and bruises.\n" + "It's becoming hard to move... you need to tend to your injuries as soon as possible.");
         } else {
             System.out.println("You're on the brink of collapse! Immediate care is necessary.");
         }
@@ -180,7 +217,7 @@ public class UI {
                 // Extracting the keyword from the user input after "take"
                 String[] inputParts = userInput.split(" ", 2);  // Split into "take" and item name
                 if (inputParts.length > 1) {
-                    actionSubject = inputParts[1].trim();  // Get the item keyword (e.g., "candle")
+                    actionSubject = inputParts[1].trim();  // Get the item keyword (ex. "candle")
                     userInput = "take";  // change userInput to "take" for switch-case
                 }
             }
@@ -201,9 +238,9 @@ public class UI {
                     userInput = "eat";
                 }
             }
-            if (userInput.contains("equip")){
+            if (userInput.contains("equip")) {
                 String[] inputPart = userInput.split(" ", 2);
-                if (inputPart.length > 1){
+                if (inputPart.length > 1) {
                     actionSubject = inputPart[1].trim();
                     userInput = "equip";
                 }
@@ -256,6 +293,7 @@ public class UI {
                 case "look":
                     displayMessage(adventure.getPlayer().getName() + " is looking around...");//gets the room description from the currentRoom object.
                     displayMessage(adventure.getPlayerLocation().getRoomDescription());
+                    seeRoomEnemies(adventure.getPlayerLocation());
                     seeRoomItems(adventure.getPlayerLocation());
                     getDoorOptions(adventure.getPlayerLocation()); //gets door options.
 
@@ -319,8 +357,8 @@ public class UI {
                         switch (foodResults) {
                             case EDIBLE -> displayMessage("You ate the " + actionSubject + ".");
                             case INEDIBLE -> displayMessage("That's not food, you can't eat that.");
-                            case POISONED -> displayMessage("The " + actionSubject + " was poisoned! \n" +
-                                    "Your stomach turns and empties itself on the floor. You feel sick.");
+                            case POISONED ->
+                                    displayMessage("The " + actionSubject + " was poisoned! \n" + "Your stomach turns and empties itself on the floor. You feel sick.");
                             case NULL -> displayMessage("There's nothing to eat...");
                         }
                     }
@@ -331,25 +369,63 @@ public class UI {
                         displayMessage("Please specify which item you would like to equip.");
                     } else {
                         EquipResults equipResults = adventure.getEquipResults(actionSubject);
-                        switch (equipResults){
+                        switch (equipResults) {
                             case FOUND -> displayMessage("You've equipped the " + actionSubject + ".");
 
-                            case NOT_FOUND -> displayMessage("You rummage through your inventory, but find no weapon like that.");
-                            case NOT_WEAPON ->displayMessage("You hold up" + actionSubject + ". \n While trying to discern it's deadliness, you realize that this won't help you at all. you put it back in your knapsack.");
+                            case NOT_FOUND ->
+                                    displayMessage("You rummage through your inventory, but find no weapon like that.");
+                            case NOT_WEAPON ->
+                                    displayMessage("You hold up" + actionSubject + ". \n While trying to discern it's deadliness, you realize that this won't help you at all. you put it back in your knapsack.");
+                            case ALREADY_EQUIPPED ->
+                                    displayMessage("You take your current weapon and stuff it in your bag, switching it out with a " + actionSubject + ".");
                         }
 
                     }
                     break;
+
                 case "attack":
                     AttackResults attackResults = adventure.getAttack();
-                    switch (attackResults){
+
+                    switch (attackResults) {
                         case MELEE -> displayMessage("You move in to attack with your weapon!");
                         case RANGED -> displayMessage("You fire off a shot with your weapon!");
-                        case NO_AMMO -> displayMessage("You get ready to fire off your weapon, but realize you're out of ammo!");
+                        case NO_AMMO ->
+                                displayMessage("You get ready to fire off your weapon, but realize you're out of ammo!");
                         case UNARMED -> displayMessage("You throw a weak punch!");
                     }
-                    break;
 
+                    Enemy thisEnemy = adventure.getPlayerLocation().getRoomEnemies();
+                    // Apply damage to the enemy
+                    if (!adventure.getPlayerLocation().getEnemyList().isEmpty()) {
+                        if (adventure.checkEnemyAlive(thisEnemy) != EnemyHealthLevel.DEAD) {
+                            int damageDealt = adventure.getPlayerAttackValue();
+                            displayMessage("You deal " + damageDealt + " damage to the enemy!");
+
+                            // Update enemy health
+                            adventure.updateEnemyHealth(thisEnemy, damageDealt);
+
+                            // Check if enemy is still alive
+                            if (adventure.checkEnemyAlive(thisEnemy) == EnemyHealthLevel.DEAD) {
+                                displayMessage("The enemy dies! Its weapon drops to the ground");
+                                adventure.getPlayerLocation().roomEnemies.remove(thisEnemy);
+                                adventure.getPlayerLocation().roomItems.add(thisEnemy.getWeapon());
+                            } else {
+                                // If the enemy is still alive, it retaliates
+                                if (adventure.checkEnemyAlive(thisEnemy) != EnemyHealthLevel.DEAD) {
+                                    int thisEnemyAttack = adventure.getEnemyAttackValue(thisEnemy);
+                                    displayMessage("The enemy retaliates, attacking with their weapon, dealing " + thisEnemyAttack + " damage!");
+                                    adventure.updatePlayerHealth(thisEnemyAttack);
+                                } else {
+                                    displayMessage("The enemy dies!");
+                                    adventure.getPlayerLocation().roomEnemies.remove(thisEnemy);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case "exit": {
+                    displayExit();
+                }
 
                 default:
                     displayMessage("Invalid option. Type 'help' for commands.");
@@ -357,9 +433,12 @@ public class UI {
 
 
             }
+
         }
+
     }
 }
+
 
 
 

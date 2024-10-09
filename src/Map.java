@@ -36,15 +36,21 @@ public class Map {
         Item candle = new Item("an unlit candle");
         Food apple = new Food("a shiny apple", 5, false);
         MeleeWeapon sword = new MeleeWeapon("an old, chipped sword", false);
+        MeleeWeapon knife = new MeleeWeapon("a greasy goblin knife", false);
+        knife.setAttackModifier(1);
+        Enemy goblin1 = new Enemy("goblin", "This goblin is fugly, in a Elon Musk kind of way.", 20, knife, 1, 5);
         room1.addRoomItems(spoon);
         room1.addRoomItems(candle);
         room1.addRoomItems(apple);
         room1.addRoomItems(sword);
+        room1.addRoomEnemies(goblin1);
 
         room2.setEast(room3);
         room2.setDark(true);
 
         room3.setSouth(room6);
+        Item book = new Item("a rune-carved tome");
+        room3.addRoomItems(book);
 
         room4.setSouth(room7);
         room4.setWest(room11);
@@ -53,6 +59,13 @@ public class Map {
         room5.setSouth(room8);
 
         room6.setSouth(room9);
+        MeleeWeapon magicDagger = new MeleeWeapon("a glowing dagger", false);
+        magicDagger.setAttackModifier(3);
+        room6.addRoomItems(magicDagger);
+        MeleeWeapon runedStaff = new MeleeWeapon("a stick, covered in black runes.", false);
+        Enemy wizard1 = new Enemy("wizardly man", "the man's face if covered in dark runes. He's got a pout, and looks strangly orange. \n " +
+                "He keep muttering under his breath about, 'building a wall' and 'taking our jobs'", 30, runedStaff, 1,8);
+        room6.addRoomEnemies(wizard1);
 
         room7.setEast(room8);
 
